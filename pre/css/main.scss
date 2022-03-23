@@ -122,17 +122,16 @@ body, button {
 
         //Visualización
         &__viz {
-            height: 424px;
+            height: auto;
             margin-top: 12px;
 
-            .chart__circle:last-child {
-                margin-top: 12px;
-            }
+            display: flex;
+            justify-content: space-around;
 
             //Visualizaciones
             #circle--first, #circle--second {
                 width: 100%;
-                height: 200px;
+                height: 300px;
             }
 
             & .tick text {
@@ -153,24 +152,6 @@ body, button {
             & .line-special {
                 stroke: #000 !important;
                 stroke-width: 0.5px !important;
-            }
-
-            //Tabla
-            &.viz-table {
-                width: 860px;
-                height: 520px;
-                margin-top: 12px;
-
-                background-color: #c3c3c3;
-                overflow-x: visible;
-
-                thead {
-                    background-color: red;
-                }
-
-                tbody {
-                    background-color: blue;
-                }
             }
         }
 
@@ -426,6 +407,33 @@ body, button {
         color: #000;
 
         margin-top: 4px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .b-chart {
+        .chart {
+            //Visualización
+        &__viz {
+            height: auto;
+            margin-top: 12px;
+
+            display: block;
+
+            .chart__circle:last-child {
+                margin-top: 12px;
+            }
+
+            //Visualizaciones
+            #circle--first, #circle--second {
+                width: 100%;
+                height: 300px;
+
+                display: flex;
+                justify-content: center;
+            }
+        }
+        }
     }
 }
 
