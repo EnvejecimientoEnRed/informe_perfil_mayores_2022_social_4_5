@@ -1,23 +1,19 @@
 //Desarrollo de las visualizaciones
 import * as d3 from 'd3';
-import { numberWithCommas2 } from '../helpers';
-//import { getInTooltip, getOutTooltip, positionTooltip } from './modules/tooltip';
+import { numberWithCommas3 } from '../helpers';
 import { setChartHeight } from '../modules/height';
 import { setChartCanvas, setChartCanvasImage } from '../modules/canvas-image';
 import { setRRSSLinks } from '../modules/rrss';
 import { setFixedIframeUrl } from './chart_helpers';
 
 //Colores fijos
-const COLOR_PRIMARY_1 = '#F8B05C', 
-COLOR_PRIMARY_2 = '#E37A42', 
-COLOR_ANAG_1 = '#D1834F', 
-COLOR_ANAG_2 = '#BF2727', 
+const COLOR_PRIMARY_1 = '#F8B05C',
 COLOR_COMP_1 = '#528FAD', 
-COLOR_COMP_2 = '#AADCE0', 
-COLOR_GREY_1 = '#B5ABA4', 
-COLOR_GREY_2 = '#64605A', 
-COLOR_OTHER_1 = '#B58753', 
-COLOR_OTHER_2 = '#731854';
+COLOR_COMP_2 = '#AADCE0',
+COLOR_GREY_1 = '#D6D6D6',
+COLOR_ANAG_PRIM_1 = '#BA9D5F', 
+COLOR_ANAG_PRIM_2 = '#9E6C51',
+COLOR_ANAG_COMP_1 = '#1C5A5E';
 
 export function initChart(iframe) {
     //Desarrollo del gráfico
@@ -25,9 +21,9 @@ export function initChart(iframe) {
         if (error) throw error;
 
         //Círculo para cuidadores de hombres
-        let width = 300,
-            height = 300,
-            margin = 20;
+        let width = 302,
+            height = 302,
+            margin = 22;
 
         let radius = Math.min(width, height) / 2 - margin;
 
@@ -41,7 +37,7 @@ export function initChart(iframe) {
 
         let color = d3.scaleOrdinal()
             .domain(data.map(function(item) { return item.tipo_cuidador; }).keys())
-            .range([COLOR_PRIMARY_1, COLOR_COMP_2, COLOR_COMP_1, COLOR_GREY_1, COLOR_GREY_2, COLOR_OTHER_1, COLOR_OTHER_2]); 
+            .range([COLOR_PRIMARY_1, COLOR_ANAG_PRIM_1, COLOR_COMP_2, COLOR_COMP_1, COLOR_ANAG_COMP_1, COLOR_ANAG_PRIM_2, COLOR_GREY_1]); 
 
         let pieHombres = d3.pie()
             .sort(null)
@@ -84,6 +80,8 @@ export function initChart(iframe) {
         });
 
         function init() {
+            ///// Hombres
+            //Barras
             chart1.selectAll('menSlices')
                 .data(data_hombres)
                 .enter()
@@ -94,7 +92,7 @@ export function initChart(iframe) {
                 .style("stroke-width", "0.25px")
                 .style("opacity", 1);
 
-            // Add the polylines between chart and labels:
+            //Líneas entre barras y texto
             chart1.selectAll('menPolylines')
                 .data(data_hombres)
                 .enter()
@@ -112,21 +110,23 @@ export function initChart(iframe) {
                         return [posA, posB, posC]
                     }                    
                 });
-
+            
+            //Texto
             chart1.selectAll('menLabels')
                 .data(data_hombres)
                 .enter()
                 .append('text')
+                .attr('class', 'chart_text')
                 .text( function(d) {
                     if(d.value != 0) {
-                        return parseFloat(d.data.value.hombre_65_dependiente).toFixed(1); 
+                        return numberWithCommas3(parseFloat(d.data.value.hombre_65_dependiente).toFixed(1)) + '%'; 
                     }                    
                 })
                 .attr('transform', function(d) {
                     if(d.value != 0) {
                         let pos = outerArc.centroid(d);
                         let midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
-                        pos[0] = radius * 0.9 * (midangle < Math.PI ? 1 : -1);
+                        pos[0] = radius * 0.85 * (midangle < Math.PI ? 1 : -1);
                         return 'translate(' + pos + ')';
                     }                    
                 })
@@ -137,7 +137,7 @@ export function initChart(iframe) {
                     }                    
                 });
             
-            ///Mujeres
+            /////// Mujeres
             chart2.selectAll('womenSlices')
                 .data(data_mujeres)
                 .enter()
@@ -176,16 +176,17 @@ export function initChart(iframe) {
                 .data(data_mujeres)
                 .enter()
                 .append('text')
+                .attr('class', 'chart_text')
                 .text( function(d) {
                     if(d.value != 0) {
-                        return parseFloat(d.data.value.mujer_65_dependiente).toFixed(1); 
+                        return numberWithCommas3(parseFloat(d.data.value.mujer_65_dependiente).toFixed(1)) + '%'; 
                     }                    
                 })
                 .attr('transform', function(d) {
                     if(d.value != 0) {
                         let pos = outerArc.centroid(d);
                         let midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
-                        pos[0] = radius * 0.9 * (midangle < Math.PI ? 1 : -1);
+                        pos[0] = radius * 0.85 * (midangle < Math.PI ? 1 : -1);
                         if(d.index == 6) {
                             pos[0] = 20;
                         } 
