@@ -91,7 +91,9 @@ button {
         //Debajo de todos los elementos lógicos tendremos la leyenda > Puede haber de 1 a 7 elementos dentro de la leyenda
         &__legend {
             display: flex;
-            flex-wrap: wrap;           
+            flex-wrap: wrap;  
+            
+            width: calc(100% - 141px);
 
             &--item {
                 position: relative;
@@ -178,7 +180,7 @@ button {
             //Texto específico
             .chart_text {
                 font-size: 14px;
-                font-weight: 300;
+                font-weight: 400;
             }
         }
 

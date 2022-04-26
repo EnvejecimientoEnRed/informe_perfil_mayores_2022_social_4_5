@@ -20,6 +20,8 @@ export function initChart(iframe) {
     d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_social_4_5/main/data/cuidadores_personas_mas65_espana.csv', function(error,data) {
         if (error) throw error;
 
+        let pathsMen, pathsWomen;
+
         //Círculo para cuidadores de hombres
         let width = 302,
             height = 302,
@@ -80,23 +82,34 @@ export function initChart(iframe) {
         });
 
         function init() {
-            ///// Hombres
+            /////// Hombres
             //Barras
             chart1.selectAll('menSlices')
                 .data(data_hombres)
                 .enter()
                 .append('path')
-                .attr('d', arc)
+                .attr('class','menSlice')
                 .attr('fill', function(d){ return(color(d.data.value.tipo_cuidador)); })
                 .attr("stroke", "white")
                 .style("stroke-width", "0.25px")
-                .style("opacity", 1);
+                .style("opacity", 1)
+                .transition()
+                .delay(function(d, i) { return i * 400; })
+                .duration(400)
+                .attrTween('d', function(d) {
+                    let i = d3.interpolate(d.startAngle, d.endAngle);
+                    return function(t) {
+                        d.endAngle = i(t);
+                        return arc(d);
+                    }
+                });
 
-            //Líneas entre barras y texto
+            //Líneas
             chart1.selectAll('menPolylines')
                 .data(data_hombres)
                 .enter()
                 .append('polyline')
+                .attr('class','rectMen')
                 .attr("stroke", "black")
                 .style("fill", "none")
                 .attr("stroke-width", 1)
@@ -110,6 +123,16 @@ export function initChart(iframe) {
                         return [posA, posB, posC]
                     }                    
                 });
+
+            pathsMen = chart1.selectAll('.rectMen');
+
+            pathsMen.attr("stroke-dasharray", 968 + " " + 968)
+                .attr("stroke-dashoffset", 968)
+                .transition()
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .delay(2100)
+                .duration(2000);
             
             //Texto
             chart1.selectAll('menLabels')
@@ -135,23 +158,41 @@ export function initChart(iframe) {
                         let midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
                         return (midangle < Math.PI ? 'start' : 'end');
                     }                    
-                });
+                })
+                .style('opacity', 0)
+                .transition()
+                .delay(2100)
+                .duration(2000)
+                .style('opacity',1);
             
             /////// Mujeres
+            // Barras
             chart2.selectAll('womenSlices')
                 .data(data_mujeres)
                 .enter()
                 .append('path')
-                .attr('d', arc)
+                .attr('class','womenSlice')
                 .attr('fill', function(d){ return(color(d.data.value.tipo_cuidador)); })
                 .attr("stroke", "white")
                 .style("stroke-width", "0.25px")
-                .style("opacity", 1);
-
+                .style("opacity", 1)
+                .transition()
+                .delay(function(d, i) { return i * 400; })
+                .duration(400)
+                .attrTween('d', function(d) {
+                    let i = d3.interpolate(d.startAngle, d.endAngle);
+                    return function(t) {
+                        d.endAngle = i(t);
+                        return arc(d);
+                    }
+                });
+            
+            //Líneas
             chart2.selectAll('womenPolylines')
                 .data(data_mujeres)
                 .enter()
                 .append('polyline')
+                .attr('class','rectWomen')
                 .attr("stroke", "black")
                 .style("fill", "none")
                 .attr("stroke-width", 1)
@@ -171,7 +212,18 @@ export function initChart(iframe) {
                         
                     }                    
                 });
+            
+            pathsWomen = chart2.selectAll('.rectWomen');
 
+            pathsWomen.attr("stroke-dasharray", 968 + " " + 968)
+                .attr("stroke-dashoffset", 968)
+                .transition()
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .delay(2100)
+                .duration(2000);
+            
+            //Texto
             chart2.selectAll('womenLabels')
                 .data(data_mujeres)
                 .enter()
@@ -199,11 +251,73 @@ export function initChart(iframe) {
                         let midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
                         return (midangle < Math.PI ? 'start' : 'end');
                     }                    
-                });
+                })
+                .style('opacity', 0)
+                .transition()
+                .delay(2100)
+                .duration(2000)
+                .style('opacity',1);
         }
 
         function animateChart() {
-            
+            //Barras
+            chart1.selectAll('.menSlice')
+                .attr('d', 0)
+                .transition()
+                .delay(function(d, i) { return i * 400; })
+                .duration(400)
+                .attrTween('d', function(d) {
+                    let i = d3.interpolate(d.startAngle, d.endAngle);
+                    return function(t) {
+                        d.endAngle = i(t);
+                        return arc(d);
+                    }
+                });
+
+            chart2.selectAll('.womenSlice')
+                .attr('d', 0)
+                .transition()
+                .delay(function(d, i) { return i * 400; })
+                .duration(400)
+                .attrTween('d', function(d) {
+                    let i = d3.interpolate(d.startAngle, d.endAngle);
+                    return function(t) {
+                        d.endAngle = i(t);
+                        return arc(d);
+                    }
+                });
+
+            //Líneas
+            pathsMen.attr("stroke-dasharray", 968 + " " + 968)
+                .attr("stroke-dashoffset", 968)
+                .transition()
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .delay(2100)
+                .duration(2000);
+
+            pathsWomen.attr("stroke-dasharray", 968 + " " + 968)
+                .attr("stroke-dashoffset", 968)
+                .transition()
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .delay(2100)
+                .duration(2000);
+
+            //Texto
+            chart1.selectAll('.chart_text')
+                .style('opacity', 0)
+                .transition()
+                .delay(2100)
+                .duration(2000)
+                .style('opacity',1);
+
+            chart2.selectAll('.chart_text')
+                .style('opacity', 0)
+                .transition()
+                .delay(2100)
+                .duration(2000)
+                .style('opacity',1);
         }
 
         /////
