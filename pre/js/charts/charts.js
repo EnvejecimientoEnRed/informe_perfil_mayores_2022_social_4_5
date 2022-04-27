@@ -15,7 +15,7 @@ COLOR_ANAG_PRIM_1 = '#BA9D5F',
 COLOR_ANAG_PRIM_2 = '#9E6C51',
 COLOR_ANAG_COMP_1 = '#1C5A5E';
 
-export function initChart(iframe) {
+export function initChart() {
     //Desarrollo del gráfico
     d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_social_4_5/main/data/cuidadores_personas_mas65_espana.csv', function(error,data) {
         if (error) throw error;
@@ -330,6 +330,10 @@ export function initChart(iframe) {
         //Animación del gráfico
         document.getElementById('replay').addEventListener('click', function() {
             animateChart();
+
+            setTimeout(() => {
+                setChartCanvas();
+            }, 4000);
         });
 
         /////
@@ -345,7 +349,9 @@ export function initChart(iframe) {
         setRRSSLinks('distribucion_cuidadores_principales');
 
         //Captura de pantalla de la visualización
-        setChartCanvas();
+        setTimeout(() => {
+            setChartCanvas();
+        }, 4000);
 
         let pngDownload = document.getElementById('pngImage');
 
@@ -354,6 +360,6 @@ export function initChart(iframe) {
         });
 
         //Altura del frame
-        setChartHeight(iframe);
+        setChartHeight();
     });    
 }
