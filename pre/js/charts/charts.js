@@ -17,7 +17,7 @@ COLOR_ANAG_COMP_1 = '#1C5A5E';
 
 export function initChart() {
     //Desarrollo del gráfico
-    d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_social_4_5/main/data/cuidadores_personas_mas65_espana.csv', function(error,data) {
+    d3.csv('https://raw.githubusercontent.com/EnvejecimientoEnRed/informe_perfil_mayores_2022_social_4_5/main/data/cuidadores_personas_mas65_espana.csv', function(error,data) {
         if (error) throw error;
 
         let pathsMen, pathsWomen;
